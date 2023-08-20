@@ -43,6 +43,8 @@ RUN apk add --update --no-cache bash ca-certificates fuse
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
 
+RUN apk add --no-cache go
+
 RUN go install github.com/googlecloudplatform/gcsfuse@latest
 
 
