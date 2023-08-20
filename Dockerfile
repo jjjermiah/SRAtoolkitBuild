@@ -1,4 +1,4 @@
-FROM ncbi/sra-tools:latest
+FROM ncbi/sra-tools
 
 RUN apt-get update && apt-get install -y curl
 
