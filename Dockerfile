@@ -1,14 +1,3 @@
-FROM golang:1.20.5-alpine as builder
-
-RUN apk add --no-cache git
-
-ARG GCSFUSE_REPO="/run/gcsfuse/"
-ADD . ${GCSFUSE_REPO}
-WORKDIR ${GCSFUSE_REPO}
-RUN git clone https://github.com/GoogleCloudPlatform/gcsfuse.git
-RUN cd gcsfuse &&  go install ./tools/build_gcsfuse
-RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
-
 
 FROM alpine:latest AS build
 RUN apk add build-base util-linux linux-headers g++ ninja cmake git perl zlib-dev bzip2-dev
@@ -49,11 +38,13 @@ RUN printf '/LIBS/IMAGE_GUID = "%s"\n' `uuidgen` > /etc/ncbi/settings.kfg && \
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 RUN apk --update add openjdk7-jre
 RUN apk add --no-cache libstdc++ libgcc
+RUN apk add --no-cache git
 RUN apk add --update --no-cache bash ca-certificates fuse
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
-COPY --from=builder /tmp/bin/gcsfuse /usr/local/bin/gcsfuse
-COPY --from=builder /tmp/sbin/mount.gcsfuse /usr/sbin/mount.gcsfuse
+
+RUN go install github.com/googlecloudplatform/gcsfuse@latest
+
 
 # Very basic smoke test to check if runnable
 RUN touch foo && srapath ./foo && rm foo
