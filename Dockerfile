@@ -33,11 +33,24 @@ RUN mkdir -p /etc/ncbi
 RUN printf '/LIBS/IMAGE_GUID = "%s"\n' `uuidgen` > /etc/ncbi/settings.kfg && \
     printf '/libs/cloud/report_instance_identity = "true"\n' >> /etc/ncbi/settings.kfg
 
+FROM golang:1.20.5-alpine as builder
+
+RUN apk add git
+
+ARG GCSFUSE_REPO="/run/gcsfuse/"
+ADD . ${GCSFUSE_REPO}
+WORKDIR ${GCSFUSE_REPO}
+RUN go install ./tools/build_gcsfuse
+RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
+
+
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 RUN apk --update add openjdk7-jre
 RUN apk add --no-cache libstdc++ libgcc
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
+COPY --from=builder /tmp/bin/gcsfuse /usr/local/bin/gcsfuse
+COPY --from=builder /tmp/sbin/mount.gcsfuse /usr/sbin/mount.gcsfuse
 
 # Very basic smoke test to check if runnable
 RUN touch foo && srapath ./foo && rm foo
