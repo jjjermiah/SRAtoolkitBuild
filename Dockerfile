@@ -5,6 +5,7 @@ RUN apk add git
 ARG GCSFUSE_REPO="/run/gcsfuse/"
 ADD . ${GCSFUSE_REPO}
 WORKDIR ${GCSFUSE_REPO}
+RUN go mod init
 RUN go install ./tools/build_gcsfuse
 RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 
