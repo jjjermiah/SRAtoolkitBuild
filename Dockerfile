@@ -40,6 +40,7 @@ WORKDIR /
 ARG GCSFUSE_REPO="/run/gcsfuse/"
 ADD . ${GCSFUSE_REPO}
 WORKDIR ${GCSFUSE_REPO}
+RUN go mod init
 RUN go install ./tools/build_gcsfuse
 RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 
@@ -47,6 +48,7 @@ RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 RUN apk --update add openjdk7-jre
 RUN apk add --no-cache libstdc++ libgcc
+RUN apk add --update --no-cache bash ca-certificates fuse
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
 COPY --from=builder /tmp/bin/gcsfuse /usr/local/bin/gcsfuse
