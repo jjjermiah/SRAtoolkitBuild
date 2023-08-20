@@ -1,3 +1,14 @@
+FROM golang:1.20.5-alpine as builder
+
+RUN apk add git
+
+ARG GCSFUSE_REPO="/run/gcsfuse/"
+ADD . ${GCSFUSE_REPO}
+WORKDIR ${GCSFUSE_REPO}
+RUN go install ./tools/build_gcsfuse
+RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
+
+
 FROM alpine:latest AS build
 RUN apk add build-base util-linux linux-headers g++ ninja cmake git perl zlib-dev bzip2-dev
 RUN apk add curl python3 py3-crcmod
@@ -32,17 +43,6 @@ RUN cmake -G Ninja                                  \
 RUN mkdir -p /etc/ncbi
 RUN printf '/LIBS/IMAGE_GUID = "%s"\n' `uuidgen` > /etc/ncbi/settings.kfg && \
     printf '/libs/cloud/report_instance_identity = "true"\n' >> /etc/ncbi/settings.kfg
-
-FROM golang:1.20.5-alpine as builder
-
-RUN apk add git
-WORKDIR /
-ARG GCSFUSE_REPO="/run/gcsfuse/"
-ADD . ${GCSFUSE_REPO}
-WORKDIR ${GCSFUSE_REPO}
-RUN go mod init
-RUN go install ./tools/build_gcsfuse
-RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 
 
 FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
