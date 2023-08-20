@@ -5,7 +5,7 @@ RUN apk add --no-cache git
 ARG GCSFUSE_REPO="/run/gcsfuse/"
 ADD . ${GCSFUSE_REPO}
 WORKDIR ${GCSFUSE_REPO}
-RUN git clone https://github.com/GoogleCloudPlatform/gcsfuse.git
+RUN cd gcsfuse && git clone https://github.com/GoogleCloudPlatform/gcsfuse.git
 RUN go install ./tools/build_gcsfuse
 RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 
