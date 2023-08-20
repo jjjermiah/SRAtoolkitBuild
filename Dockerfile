@@ -36,7 +36,7 @@ RUN printf '/LIBS/IMAGE_GUID = "%s"\n' `uuidgen` > /etc/ncbi/settings.kfg && \
 FROM golang:1.20.5-alpine as builder
 
 RUN apk add git
-
+WORKDIR /
 ARG GCSFUSE_REPO="/run/gcsfuse/"
 ADD . ${GCSFUSE_REPO}
 WORKDIR ${GCSFUSE_REPO}
