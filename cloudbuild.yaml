@@ -11,8 +11,8 @@ steps:
     - 'build'
     - '-t'
     - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/SRA-tools-GCP:latest'
-    - '--cache-from'  # Add this line to enable build caching
-    - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/SRA-tools-GCP:latest'  # Specify the image to use as cache source
+    # - '--cache-from'  # Add this line to enable build caching
+    # - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/SRA-tools-GCP:latest'  # Specify the image to use as cache source
     - '.'
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
