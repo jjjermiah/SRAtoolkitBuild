@@ -1,0 +1,8 @@
+FROM northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp:latest 
+
+# Install gcsfuse
+RUN apt-get update && apt-get install -y gcsfuse
+
+# Create a mount point
+RUN mkdir /mnt/my_bucket
+
