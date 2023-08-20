@@ -6,10 +6,6 @@ ARG GCSFUSE_REPO="/run/gcsfuse/"
 ADD . ${GCSFUSE_REPO}
 WORKDIR ${GCSFUSE_REPO}
 RUN git clone https://github.com/GoogleCloudPlatform/gcsfuse.git
-
-# RUN go mod init github.com/googlecloudplatform/gcsfuse
-RUN go mod tidy
-# RUN go install github.com/googlecloudplatform/gcsfuse
 RUN go install ./tools/build_gcsfuse
 RUN build_gcsfuse . /tmp $(git log -1 --format=format:"%H")
 
