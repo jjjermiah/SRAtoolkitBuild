@@ -17,4 +17,5 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp_mount:latest']
 
-  
+options:
+  machineType: 'E2_HIGHCPU_32'
