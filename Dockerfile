@@ -43,7 +43,7 @@ RUN apk --no-cache add \
     openjdk7-jre libstdc++ libgcc fuse
 
 COPY --from=build /usr/local/bin /usr/local/bin
-# COPY --from=build /etc/ncbi /etc/ncbi
+COPY --from=build /etc/ncbi /etc/ncbi
 
 # Install gcsfuse
 RUN apk --no-cache add go && \
