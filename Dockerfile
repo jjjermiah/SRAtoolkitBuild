@@ -3,16 +3,12 @@ FROM golang:alpine AS builder
 
 RUN apk --update --no-cache add git fuse fuse-dev;
 RUN go install github.com/googlecloudplatform/gcsfuse@master
-# RUN build_gcsfuse ${GOPATH}/src/github.com/googlecloudplatform/gcsfuse /tmp ${GCSFUSE_VERSION}
-
 
 # Stage 2: stage 
-
 FROM ncbi/sra-tools:latest AS build
 
 RUN apk add --no-cache \
     curl python3 py3-crcmod
-    # build-base util-linux linux-headers g++ ninja cmake git perl zlib-dev bzip2-dev \
 
 # Install Google Cloud SDK
 RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-443.0.0-linux-x86_64.tar.gz && \
@@ -29,11 +25,16 @@ FROM alpine:latest
 COPY --from=builder /go/bin/gcsfuse /usr/local/bin/gcsfuse
 
 # Copy Google Cloud SDK from the build stage
+RUN apk add --no-cache python3
+
 COPY --from=build /google-cloud-sdk /google-cloud-sdk
+
+RUN export PATH="/google-cloud-sdk/bin:$PATH"
 
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
 
+COPY . /
 
 # TEST 
 RUN prefetch --help
@@ -42,6 +43,7 @@ RUN gcsfuse --help
 
 RUN fasterq-dump --help
 
+RUN gcloud --help 
 
 # Copy any other files or configurations you need
 # COPY ... /destination/path
