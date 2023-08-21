@@ -1,18 +1,24 @@
+# This cloud build is for building the docker image for SRAtoolkit. 
+# The Dockerfile will have more details but this is the basic build process.
+#
 steps:
-# # Pull the container image (for --cache-from to compare)
-# - name: 'gcr.io/cloud-builders/docker'
-#   entrypoint: 'bash'
-#   args: ['-c', 'docker pull northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp:latest || exit 0']
+# Pull the container image (for --cache-from to compare)
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c', 'docker pull northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp_mount:latest || exit 0']
 
 # Build image using docker
-# - name: 'gcr.io/cloud-builders/docker'
-#   args:
-#     - 'build'
-#     - '-t'
-#     - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp:latest'
-#     # - '--cache-from'  # Add this line to enable build caching
-#     # - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp:latest'  # Specify the image to use as cache source
-#     - '.'
-# # Push the container image to Container Registry
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['push', 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - 'build'
+    - '-t'
+    - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp_mount:latest'
+    - '--cache-from'  # Add this line to enable build caching
+    - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp_mount:latest'  # Specify the image to use as cache source
+    - '.'
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/sra_toolkit_gcp_mount:latest']
+
+options:
+  machineType: 'E2_HIGHCPU_32'

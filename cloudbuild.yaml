@@ -1,3 +1,6 @@
+# This cloud build is for building the docker image for SRAtoolkit. 
+# The Dockerfile will have more details but this is the basic build process.
+#
 steps:
 # Pull the container image (for --cache-from to compare)
 - name: 'gcr.io/cloud-builders/docker'

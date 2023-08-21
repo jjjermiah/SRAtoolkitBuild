@@ -35,7 +35,7 @@ RUN printf '/LIBS/IMAGE_GUID = "%s"\n' `uuidgen` > /etc/ncbi/settings.kfg && \
     printf '/libs/cloud/report_instance_identity = "true"\n' >> /etc/ncbi/settings.kfg
 
 
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
+# FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine
 RUN apk --update add openjdk7-jre
 RUN apk add --no-cache libstdc++ libgcc
 RUN apk add --no-cache git
