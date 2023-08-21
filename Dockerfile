@@ -12,25 +12,23 @@ RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     rm google-cloud-sdk-443.0.0-linux-x86_64.tar.gz && \
     ./google-cloud-sdk/install.sh
 
-# Install gcsfuse
-RUN apk --no-cache add go && \
-    go install github.com/googlecloudplatform/gcsfuse@latest
-
 # Stage 2: Final stage
 FROM alpine:latest
 
 # Copy Google Cloud SDK from the build stage
 COPY --from=build /google-cloud-sdk /google-cloud-sdk
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /etc/ncbi /etc/ncbi
 
-# Copy gcsfuse binary from the build stage
-COPY --from=build /go/bin/gcsfuse /usr/local/bin/gcsfuse
+# Install gcsfuse
+RUN apk --no-cache add go && \
+    go install github.com/googlecloudplatform/gcsfuse@latest
 
 
 # COPY --from=build /usr/local/bin /usr/local/bin
 # COPY --from=build /etc/ncbi /etc/ncbi
 
-COPY --from=build /usr/local/bin /usr/local/bin
-COPY --from=build /etc/ncbi /etc/ncbi
+
 
 # TEST 
 RUN prefetch --help
