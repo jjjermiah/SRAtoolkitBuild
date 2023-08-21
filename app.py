@@ -44,7 +44,7 @@ def download():
         bucket_name="ncbi-ccle-data"
         bucket_folder_name = "SRA_Downloads"
         gcloud_storage.upload_folder_to_gcs(bucket_name=bucket_name,  
-                                            source_folder=os.path.join(save_folder, sra_id), 
+                                            source_folder=os.path.join(save_folder), 
                                             destination_folder=os.path.join(bucket_folder_name, sra_id))
         
 
