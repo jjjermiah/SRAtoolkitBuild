@@ -1,5 +1,13 @@
-
 # Stage 1: Build stage
+FROM golang:alpine AS builder
+
+RUN apk --update --no-cache add git fuse fuse-dev;
+RUN go install github.com/googlecloudplatform/gcsfuse@master
+# RUN build_gcsfuse ${GOPATH}/src/github.com/googlecloudplatform/gcsfuse /tmp ${GCSFUSE_VERSION}
+
+
+# Stage 2: stage 
+
 FROM ncbi/sra-tools:latest AS build
 
 RUN apk add --no-cache \
@@ -12,21 +20,15 @@ RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     rm google-cloud-sdk-443.0.0-linux-x86_64.tar.gz && \
     ./google-cloud-sdk/install.sh
 
-# Stage 2: Final stage
+# Stage 3
 FROM alpine:latest
+COPY --from=builder /go/bin/gcsfuse /usr/local/bin/gcsfuse
 
 # Copy Google Cloud SDK from the build stage
 COPY --from=build /google-cloud-sdk /google-cloud-sdk
+
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /etc/ncbi /etc/ncbi
-
-# Install gcsfuse
-RUN apk --no-cache add go && \
-    go install github.com/googlecloudplatform/gcsfuse@latest
-
-
-# COPY --from=build /usr/local/bin /usr/local/bin
-# COPY --from=build /etc/ncbi /etc/ncbi
 
 
 
