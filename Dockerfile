@@ -2,6 +2,10 @@
 # Stage 1: Build stage
 FROM ncbi/sra-tools:latest AS build
 
+RUN apk add --no-cache \
+    curl python3 py3-crcmod
+    # build-base util-linux linux-headers g++ ninja cmake git perl zlib-dev bzip2-dev \
+
 # Install Google Cloud SDK
 RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-443.0.0-linux-x86_64.tar.gz && \
     tar xzf google-cloud-sdk-443.0.0-linux-x86_64.tar.gz && \
