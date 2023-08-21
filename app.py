@@ -24,13 +24,6 @@ def index():
         <input type="submit" value="Download">
     </form>
     <div id="log-output"></div>
-    <script>
-        const logOutput = document.getElementById('log-output');
-        const eventSource = new EventSource('/log_stream');
-        eventSource.onmessage = function(event) {
-            logOutput.innerHTML += event.data + '<br>';
-        };
-    </script>
     """
 
 @app.route("/download")
@@ -41,11 +34,11 @@ def download():
     print(f"Using: {sra_id}")
     save_folder="./SRA_data"
     if{sra_id != "empty"}:
-        my_logger = setup_custom_logger('download_SRA', log_level=logging.DEBUG, log_file=os.path.join(save_folder,sra_id, "test.log"))
+        # my_logger = setup_custom_logger('download_SRA', log_level=logging.DEBUG, log_file=os.path.join(save_folder,sra_id, "test.log"))
 
         
-        my_logger.info("Currently processing: " + sra_id + " ({0}/{1})".format(sra_id, '{0}/{1}'.format(save_folder, sra_id)))
-        
+        # my_logger.info("Currently processing: " + sra_id + " ({0}/{1})".format(sra_id, '{0}/{1}'.format(save_folder, sra_id)))
+        my_logger = setup_custom_logger('download_SRA', log_level=logging.DEBUG)
         res = download_accession(sra_id, cores=cores, logger=my_logger, save_folder=save_folder)
         
         bucket_name="ncbi-ccle-data"
@@ -65,6 +58,7 @@ def download():
 def log_stream():
     sra_id = flask.request.args.get("sra", "empty")
     log_file_path = os.path.join("./SRA_data", sra_id, "test.log")
+    log_file_path = os.path.join("./SRA_data", "test.log")
 
     def generate():
         with open(log_file_path, "r") as log_file:
