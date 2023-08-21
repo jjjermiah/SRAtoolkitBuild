@@ -45,5 +45,5 @@ steps:
     - 'orcestra@orcestra-388613.iam.gserviceaccount.com'
 images:
 - 'northamerica-northeast2-docker.pkg.dev/orcestra-388613/bhklab-docker-repo/downloadsra:latest'
-# options:
-#   machineType: 'E2_HIGHCPU_8'
+options:
+  machineType: 'E2_HIGHCPU_32'
